@@ -220,9 +220,10 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                         fit: StackFit.expand,
                         children: [
                           Material(
+                            type: MaterialType.transparency,
                             borderRadius: BorderRadius.circular(12),
                             clipBehavior: Clip.antiAlias,
-                            elevation: shouldHighlight ? 7 : 4,
+                            elevation: 0,
                             shadowColor: Colors.black,
                             child: Stack(
                               fit: StackFit.expand,
@@ -244,7 +245,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                                     duration: _focusAnimationDuration,
                                     curve: Curves.easeInOut,
                                     opacity: shouldHighlight ? 0.0 : 1.0,
-                                    child: const ColoredBox(color: Color(0x1A000000)),
+                                    child: const SizedBox.shrink(),
                                   ),
                                 ),
                               ],

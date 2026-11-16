@@ -1,0 +1,36 @@
+name: Build transparent APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.41.9"
+          channel: stable
+          cache: true
+      - name: Create throwaway keystore
+        run: |
+          keytool -genkeypair -v -keystore android/app/my.jks -storepass android -keypass android \
+            -alias my -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Arc"
+          {
+            echo "storeFile=my.jks"
+            echo "storePassword=android"
+            echo "keyAlias=my"
+            echo "keyPassword=android"
+          } >> android/local.properties
+      - run: flutter pub get
+      - run: flutter pub get
+      - run: flutter build apk --release --flavor github
+      - uses: actions/upload-artifact@v4
+        with:
+          name: arc-apks
+          path: build/app/outputs/flutter-apk/*.apk
